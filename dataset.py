@@ -42,20 +42,6 @@ def load_data_abide_cc200(dataset_path, pick_site=None):
     # one-hot
     site_one_hot = F.one_hot(site_tensor_int, num_classes=num_classes)
 
-    # pick
-    if pick_site == 'nyu_um_ucla':
-        pick_site_mask = (site_np == 'NYU') | (site_np == 'UM') | (site_np == 'UCLA')
-        final_pearson = final_pearson[pick_site_mask]
-        labels_np = labels_np[pick_site_mask]
-        site_np = site_np[pick_site_mask]
-        site_one_hot = site_one_hot[pick_site_mask]
-    elif pick_site == 'nyu':
-        pick_site_mask = (site_np == 'NYU')
-        final_pearson = final_pearson[pick_site_mask]
-        labels_np = labels_np[pick_site_mask]
-        site_np = site_np[pick_site_mask]
-        site_one_hot = site_one_hot[pick_site_mask]
-
     # Numpy to Tensor
     pcc_tensor = torch.from_numpy(final_pearson).float()
     ori_labels_tensor = torch.from_numpy(labels_np).float()  #  0/1 label

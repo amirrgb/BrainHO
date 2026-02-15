@@ -15,9 +15,9 @@ class SigmoidScheduler:
     def __init__(self, target_weight=1.0, center_step=2000, slope=0.005):
         """
         Args:
-            target_weight: 最终的最大权重值.
-            center_step: 权重增长到目标值一半(50%)时的步数 (t0).
-            slope: 增长的陡峭程度 (k). 越大越陡峭.
+            target_weight: max w
+            center_step: half w step
+            slope: k.
         """
         self.target_weight = target_weight
         self.center_step = center_step
@@ -25,12 +25,10 @@ class SigmoidScheduler:
         self.current_step = 0
 
     def step(self):
-        """调用该函数，步数+1，并返回当前权重"""
         self.current_step += 1
         return self.get_weight(self.current_step)
 
     def get_weight(self, step):
-        """根据指定步数计算权重"""
         # Sigmoid
         weight = self.target_weight / (1 + np.exp(-self.slope * (step - self.center_step)))
         return weight
@@ -49,7 +47,6 @@ def save_checkpoint(state_dict, epoch, args, filename="model.pt", optimizer=None
 
 
 def format_time(seconds):
-    """格式化时间秒数为小时、分钟、秒的字符串"""
     hours = int(seconds // 3600)
     minutes = int((seconds % 3600) // 60)
     secs = seconds % 60
@@ -63,7 +60,6 @@ def format_time(seconds):
 
 
 def calculate_eta(current_exp, total_experiments, experiment_times):
-    """计算ETA信息, 基于上一次实验的耗时"""
     if not experiment_times:
         return " | ETA: Calculating..."
 
@@ -75,11 +71,11 @@ def calculate_eta(current_exp, total_experiments, experiment_times):
 
     eta_seconds = last_exp_time * remaining_experiments
 
-    # ETA时间
+    # ETA
     eta_time = datetime.now() + timedelta(seconds=eta_seconds)
     eta_str = eta_time.strftime("%Y-%m-%d %H:%M:%S")
 
-    # 剩余时间
+    # remain
     remaining_str = format_time(eta_seconds)
 
     return f" | ETA: {eta_str} | Remaining: {remaining_str}"

@@ -48,13 +48,9 @@ parser.add_argument("--dataset", default="abide_cc200", type=str, help="dataset 
 parser.add_argument("--data_aug", action="store_true", help="use data_aug")
 parser.add_argument("--dataset_path", default='/home/path/path/dataset/abide_cc200/abide.npy', type=str,
                     help="dataset abs_path\
-                    MDD: /home/path/path/dataset/njmu_mdd/MDD_HC.npy \
-                    BD: /home/path/path/dataset/njmu_bd/BD_HC.npy \
                     ABIDE: /home/path/path/dataset/abide_cc200/abide.npy  ")
-parser.add_argument("--label_path", default='/home/path/path/dataset/njmu_mdd/MDD_HC_label.npy', type=str,
+parser.add_argument("--label_path", default='/home/path/path/dataset/label.npy', type=str,
                     help="label abs_path\
-                    MDD: /home/path/path/dataset/njmu_mdd/MDD_HC_label.npy \
-                    BD: /home/path/path/dataset/njmu_bd/BD_HC_label.npy \
                     ")
 parser.add_argument("--n_splits", default=5, type=int, help="k fold")
 parser.add_argument("--cur_fold", default=0, type=int, help="cur_fold")
@@ -107,21 +103,9 @@ def main_worker(args, logger):
         torch.cuda.set_device(args.cuda)
         logger.info('The GPU device {} is set !'.format(gpu_name))
     # ---------------------------------------------------------------------------dataset
-    if args.dataset == 'mdd' or args.dataset == 'bd':
-        data_pearson, labels, ori_labels = load_data_mdd_bd(args.dataset_path, args.label_path)
-    elif args.dataset == 'abide_cc200':
+    if args.dataset == 'abide_cc200':
         data_pearson, labels, ori_labels, ori_labels_np, site_np, site_one_hot = load_data_abide_cc200(
             args.dataset_path)
-    elif args.dataset == 'abide_cc200_nyu':
-        data_pearson, labels, ori_labels, ori_labels_np, site_np, site_one_hot = load_data_abide_cc200(
-            args.dataset_path, pick_site='nyu')
-    elif args.dataset == 'abide_cc200_nyu_um_ucla':
-        data_pearson, labels, ori_labels, ori_labels_np, site_np, site_one_hot = load_data_abide_cc200(
-            args.dataset_path, pick_site='nyu_um_ucla')
-    elif args.dataset == 'abide_aal116':
-        data_pearson, labels, ori_labels = load_data_abide_aal116(args.dataset_path)
-    elif args.dataset == 'abide_aal116_nyu':
-        data_pearson, labels, ori_labels = load_data_abide_aal116(args.dataset_path, pick_site='NYU')
     elif args.dataset == 'rest-meta-mdd':
         data_pearson, labels, ori_labels_np, site_np = load_data_rest_meta_mdd(args.dataset_path)
 
@@ -129,14 +113,14 @@ def main_worker(args, logger):
     dataset = TensorDataset(data_pearson, labels)
     stratify_target = None
     if args.dataset == 'mdd' or args.dataset == 'bd':
-        # 使用普通 KFold，不分层
+        # KFold, no stratify
         skf = KFold(n_splits=args.n_splits, shuffle=True)
         stratify_target = None
     else:
-        # 其他数据集使用分层 KFold，以 site_np 为分层依据
+        # stratify KFold，site_np
         skf = StratifiedKFold(n_splits=args.n_splits, shuffle=True)
         stratify_target = site_np
-    # 所有测试结果
+    # all test
     all_fold_auc = []
     all_fold_acc = []
     all_fold_sen = []
@@ -150,7 +134,7 @@ def main_worker(args, logger):
         total_main_attn_g2node_accum = None
         full_folds_counts = 0
 
-    # 5折
+    # 5fold
     if args.dataset == 'mdd' or args.dataset == 'bd':
         split_generator = skf.split(data_pearson)
     else:
@@ -171,14 +155,14 @@ def main_worker(args, logger):
             test_size=val_size,
             stratify=inner_stratify
         )
-        # 创建采样器
+        # create sampler
         train_sampler = SubsetRandomSampler(train_idx)
         val_sampler = SubsetRandomSampler(val_idx)
         test_sampler = SubsetRandomSampler(test_idx)
         # print(f'test_idx: {test_idx}')
         # a=[]
         # b=a[1]
-        # # 站点数
+        # # site
         # train_site, train_counts = np.unique(site_np, return_counts=True)
         # logger.info('all-----------')
         # for i in range(len(train_site)):
@@ -333,7 +317,7 @@ def main_worker(args, logger):
 
             logger.info(f"fetch Fold {fold + 1} ASD vis data")
             logger.info(f"vis_acc = {acc * 100:.3f}")
-            continue # 继续提取下一折
+            continue # next fold
         else:
             '''----------------------------------------------training----------------------------------------------'''
             best_model_weights, best_val_acc, best_val_epoch = trainer.run_train(
@@ -364,7 +348,7 @@ def main_worker(args, logger):
             all_fold_val_acc.append(best_val_acc)
 
     if args.vis:
-        logger.info(f"所有 Fold 处理完毕，正在计算平均值并绘图")
+        logger.info(f"all Fold finished, vis...")
         avg_attn_gsg = total_main_attn_gsg_accum / full_folds_counts
         avg_attn_sgn = total_main_attn_sgn_accum / full_folds_counts
         avg_attn_node = total_main_attn_node_accum / full_folds_counts

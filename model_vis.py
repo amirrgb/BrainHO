@@ -86,7 +86,7 @@ class HierarchicalAttention(nn.Module):
         k_n_cross, v_n_cross = kv_n[0], kv_n[1]
         attn_sgn = (q_sg_vec @ k_n_cross.transpose(-2, -1)) * self.scale
         attn_sgn = self.sparsemax(attn_sgn)
-        attn_sgn_dtc = attn_sgn.clone().detach()  # 可视化
+        attn_sgn_dtc = attn_sgn.clone().detach()  # vis
         attn_sgn = self.attn_drop(attn_sgn)
         x_sg_new = (attn_sgn @ v_n_cross).transpose(1, 2).reshape(B, self.num_sg, C)
         x_sg_updated = self.norm_sg(x_sg + x_sg_new)

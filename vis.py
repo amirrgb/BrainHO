@@ -14,9 +14,9 @@ RANDOM_SEED = 0
 def vis_epoch(model, loader, args, train_data=False, tvt = None):
     model.eval()
 
-    # 用于存储一个 epoch 内所有的预测概率
+    # one epoch pred
     all_pred_probs = []
-    # 用于存储一个 epoch 内所有的真实标签
+    # one epoch gt
     all_true_labels = []
 
     count = 0
@@ -34,19 +34,19 @@ def vis_epoch(model, loader, args, train_data=False, tvt = None):
             data_pearson, labels = batch_data
             data_pearson, labels = data_pearson.cuda(), labels.cuda()
 
-            # 判断 labels 是否为 One-Hot (Shape [Batch, 2])
+            #  labels  One-Hot (Shape [Batch, 2])
             if labels.dim() > 1 and labels.shape[1] > 1:
-                # 假设 Class 1 (index 1) 是 ASD
+                #  Class 1 (index 1) = ASD
                 asd_indices = (labels[:, 1] == 1).nonzero(as_tuple=True)[0]
             else:
-                # 假设 Scalar Labels
+                #  Scalar Labels
                 asd_indices = (labels == 1).nonzero(as_tuple=True)[0]
 
-            # 如果当前 Batch 没有 ASD 患者，跳过
+            # no ASD
             if len(asd_indices) == 0:
                 continue
 
-            # 筛选数据
+            # ASD data
             data_asd = data_pearson[asd_indices]
 
             pred, attn_node_list, attn_sgn_list, attn_gsg_list, attn_g2node_list = model(data_asd)
@@ -60,7 +60,7 @@ def vis_epoch(model, loader, args, train_data=False, tvt = None):
             all_true_labels.append(y_true_batch.cpu().numpy())
 
             '''----------------------------------------------vis----------------------------------------------'''
-            # 取最后一层的 attention: [Batch, Heads, 200, 200]
+            # last attention: [Batch, Heads, 200, 200]
             # last_layer_attn_gsg = attn_gsg_list[-1]
             # last_layer_attn_sgn = attn_sgn_list[-1]
             # last_layer_attn_node = attn_node_list[-1]
@@ -73,7 +73,7 @@ def vis_epoch(model, loader, args, train_data=False, tvt = None):
             # print(f'last_layer_attn_gsg: {last_layer_attn_gsg.shape}')
             # a=[]
             # b=a[1]
-            # 在 Heads 维度取平均 [Batch, 200, 200]
+            # Heads mean [Batch, 200, 200]
             avg_attn_gsg = last_layer_attn_gsg.mean(dim=1)
             avg_attn_sgn = last_layer_attn_sgn.mean(dim=1)
             avg_attn_node = last_layer_attn_node.mean(dim=1)
@@ -123,10 +123,10 @@ def vis_epoch(model, loader, args, train_data=False, tvt = None):
     spec = tn / (tn + fp) if (tn + fp) > 0 else 0.0
 
     if total_samples_count == 0:
-        print(f"Warning: Fold {args.cur_fold} - 未发现 ASD 样本 (Check labels)，返回全零矩阵。")
+        print(f"Warning: Fold {args.cur_fold} - no ASD")
         return np.zeros((200, 200))
 
-    print(f"Fold {args.cur_fold}: 已计算 {total_samples_count} 个 ASD 样本。")
+    print(f"Fold {args.cur_fold}:  {total_samples_count} ASD samples")
     return auc, acc, sen, spec, total_attn_gsg_accum.cpu().numpy(), total_attn_sgn_accum.cpu().numpy(), total_attn_node_accum.cpu().numpy(), total_attn_g2node_accum.cpu().numpy(), total_samples_count
 
 

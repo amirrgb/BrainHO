@@ -63,9 +63,9 @@ def train_epoch(model, loader, optimizer, scheduler, w_loss2_scheduler, args):
 def test_epoch(model, loader):
     model.eval()
 
-    # 用于存储一个 epoch 内所有的预测概率
+    # one epoch pred
     all_pred_probs = []
-    # 用于存储一个 epoch 内所有的真实标签
+    # one epoch gt
     all_true_labels = []
 
     with torch.no_grad():
