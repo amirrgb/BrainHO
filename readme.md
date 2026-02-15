@@ -1,16 +1,16 @@
-# paper name
+# Learning the Hierarchical Organization in Brain Network for Brain Disorder Diagnosis
 
-This repository contains the official PyTorch implementation of **mymodel**.
+This repository contains the official PyTorch implementation of **BrainHO**.
 
 ## Installation
 
 Create a virtual environment and install the required dependencies:
 
 ```bash
-conda create -n mymodel python==3.9.0
+conda create -n BrainHO python==3.9.0
 ```
 ```bash
-conda activate mymodel
+conda activate BrainHO
 ```
 ```bash
 pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
@@ -25,7 +25,7 @@ Please download the required fMRI datasets directly from the official ABIDE and 
 
 ## Training & Evaluation
 
-### mymodel
+### BrainHO
 ```bash
 python train_t.py --session current_SOTA \
                   --rootdir . \

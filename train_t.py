@@ -21,8 +21,8 @@ from dataset import (
     load_data_abide_aal116,
     load_data_rest_meta_mdd
 )
-from model import mymodel, mymodel_woHA, TF
-from model_vis import mymodel_vis
+from model import BrainHO, BrainHO_woHA, TF
+from model_vis import BrainHO_vis
 from vis import vis_epoch, vis_learned_composition_yeo7_style, export_subgraph_composition_to_csv, export_all_subgraphs_brainnet_clipped_aal
 
 warnings.filterwarnings("ignore")
@@ -61,7 +61,7 @@ parser.add_argument("--cur_fold", default=0, type=int, help="cur_fold")
 parser.add_argument("--mixup_alpha", default=0.5, type=float, help="mixup param")
 
 # model
-parser.add_argument("--model", default="mymodel", type=str, help="model name")
+parser.add_argument("--model", default="BrainHO", type=str, help="model name")
 parser.add_argument('--input_dim', default=200, type=int, help='input_dim')
 parser.add_argument('--embed_dim', default=384, type=int, help='embed_dim')
 parser.add_argument('--num_classes', default=2, type=int, help='num_classes')
@@ -223,8 +223,8 @@ def main_worker(args, logger):
         )
         # logger.info('The dataloader is set !')
         '''----------------------------------------------create model----------------------------------------------'''
-        if args.model == 'mymodel':
-            model = mymodel(input_dim=args.input_dim,
+        if args.model == 'BrainHO':
+            model = BrainHO(input_dim=args.input_dim,
                                         embed_dim=args.embed_dim,
                                         num_classes=args.num_classes,
                                         num_heads=args.num_heads,
@@ -235,8 +235,8 @@ def main_worker(args, logger):
                                         num_node=args.num_node,
                                         num_sg=args.num_sg,
                                         )
-        elif args.model == 'mymodel_woHA':
-            model = mymodel_woHA(input_dim=args.input_dim,
+        elif args.model == 'BrainHO_woHA':
+            model = BrainHO_woHA(input_dim=args.input_dim,
                                         embed_dim=args.embed_dim,
                                         num_classes=args.num_classes,
                                         num_heads=args.num_heads,
@@ -259,8 +259,8 @@ def main_worker(args, logger):
                                         num_node=args.num_node,
                                         num_sg=args.num_sg,
                                         )
-        elif args.model == 'mymodel_vis':
-            model = mymodel_vis(input_dim=args.input_dim,
+        elif args.model == 'BrainHO_vis':
+            model = BrainHO_vis(input_dim=args.input_dim,
                                         embed_dim=args.embed_dim,
                                         num_classes=args.num_classes,
                                         num_heads=args.num_heads,

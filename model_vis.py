@@ -1,4 +1,4 @@
-'''----------------------------------------------mymodel vis----------------------------------------------
+'''----------------------------------------------BrainHO vis----------------------------------------------
 for vis, modified output
 '''
 
@@ -135,7 +135,7 @@ class Block(nn.Module):
         return x, attn_node, attn_sgn, attn_gsg, attn_g2node
 
 
-class mymodel_vis(torch.nn.Module):
+class BrainHO_vis(torch.nn.Module):
 
     def __init__(self,
                  input_dim=200,
@@ -151,7 +151,7 @@ class mymodel_vis(torch.nn.Module):
                  num_node=200,
                  num_sg=8
                  ):
-        super(mymodel_vis, self).__init__()
+        super(BrainHO_vis, self).__init__()
         self.input_dim = input_dim
         self.embed_dim = embed_dim
         self.hidden_dim = hidden_dim

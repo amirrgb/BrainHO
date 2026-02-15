@@ -126,8 +126,8 @@ class Block(nn.Module):
         return x
 
 
-'''----------------------------------------------mymodel----------------------------------------------'''
-class mymodel(torch.nn.Module):
+'''----------------------------------------------BrainHO----------------------------------------------'''
+class BrainHO(torch.nn.Module):
 
     def __init__(self,
                  input_dim=200,
@@ -143,7 +143,7 @@ class mymodel(torch.nn.Module):
                  num_node=200,
                  num_sg=8
                  ):
-        super(mymodel, self).__init__()
+        super(BrainHO, self).__init__()
         self.input_dim = input_dim
         self.embed_dim = embed_dim
         self.hidden_dim = hidden_dim
@@ -202,7 +202,7 @@ class mymodel(torch.nn.Module):
 
 
 
-'''----------------------------------------------mymodel w/o HA----------------------------------------------'''
+'''----------------------------------------------BrainHO w/o HA----------------------------------------------'''
 class Attention(nn.Module):
     def __init__(self, dim, num_heads=8, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0.):
         super().__init__()
@@ -254,7 +254,7 @@ class Block_woHA(nn.Module):
         return x
 
 
-class mymodel_woHA(torch.nn.Module):
+class BrainHO_woHA(torch.nn.Module):
 
     def __init__(self,
                  input_dim=200,
@@ -270,7 +270,7 @@ class mymodel_woHA(torch.nn.Module):
                  num_node=200,
                  num_sg=8
                  ):
-        super(mymodel_woHA, self).__init__()
+        super(BrainHO_woHA, self).__init__()
         self.input_dim = input_dim
         self.embed_dim = embed_dim
         self.hidden_dim = hidden_dim

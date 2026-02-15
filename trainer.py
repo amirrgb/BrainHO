@@ -24,7 +24,7 @@ def train_epoch(model, loader, optimizer, scheduler, w_loss2_scheduler, args):
         data_pearson, labels = batch_data
         data_pearson, labels = data_pearson.cuda(), labels.cuda()
 
-        # print(f'data_p_mymodel: {data_pearson[0, 5, 6]}')
+        # print(f'data_p_BrainHO: {data_pearson[0, 5, 6]}')
         # a = []
         # b = a[1]
 
