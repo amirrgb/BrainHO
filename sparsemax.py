@@ -49,7 +49,6 @@ class Sparsemax(nn.Module):
 
         # Sort input in descending order.
         # (NOTE: Can be replaced with linear time selection method described here:
-        # http://stanford.edu/~jduchi/projects/DuchiShSiCh08.html)
         zs = torch.sort(input=input, dim=dim, descending=True)[0]
         # range = torch.arange(start=1, end=number_of_logits + 1, step=1, device=device, dtype=input.dtype).view(1, -1)
         range = torch.arange(start=1, end=number_of_logits + 1, step=1, device=input.device, dtype=input.dtype).view(1, -1)
@@ -86,5 +85,6 @@ class Sparsemax(nn.Module):
         nonzeros = torch.ne(self.output, 0)
         sum = torch.sum(grad_output * nonzeros, dim=dim) / torch.sum(nonzeros, dim=dim)
         self.grad_input = nonzeros * (grad_output - sum.expand_as(grad_output))
+
 
         return self.grad_input
