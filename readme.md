@@ -23,6 +23,15 @@ pip install -r requirements.txt
 
 Please download the required fMRI datasets directly from the official ABIDE and REST-meta-MDD websites.
 
+### preprocess the ABIDE dataset
+We directly utilized the open-source preprocessed data provided by the Brain Network Transformer (BNT).
+
+### preprocess the REST-meta-mdd dataset
+```bash
+python fetch_rest_meta_mdd_cc200.py
+```
+
+
 ## Training & Evaluation
 
 ### BrainHO
