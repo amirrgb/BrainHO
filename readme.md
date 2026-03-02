@@ -36,7 +36,7 @@ python fetch_rest_meta_mdd_cc200.py
 
 ### BrainHO
 ```bash
-python train_t.py --session current_SOTA \
+python train.py --session current_SOTA \
                   --rootdir . \
                   --cuda 1 \
                   --dataset abide_cc200 \
